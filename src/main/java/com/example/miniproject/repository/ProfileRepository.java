@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ProfileRepository extends JpaRepository<ProfileEntity, String> {
-    @Query(value = "from ProfileEntity p where p.skills like %:skill% ")
-    Page<ProfileEntity> findAllBySkill(@Param("skill") String skill, Pageable pageable);
+import java.util.List;
 
+@Repository
+public interface ProfileRepository extends JpaRepository<ProfileEntity, Long> {
+    Page<ProfileEntity> findAll(Pageable pageable);
+    Page<ProfileEntity>  findProfileEntityBySkillNamaSkill(String namaSkill, Pageable pageable);
 
 }

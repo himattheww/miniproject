@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,7 +23,7 @@ public class ProfileController {
     @PostMapping(value = "/add-profile")
     public ResponseEntity<?> save(@RequestBody ProfileEntity profileEntity) {
         try {
-            profileEntity.setId(UUID.randomUUID().toString());
+
             profileService.save(profileEntity);
             return new ResponseEntity<>("Berhasil", HttpStatus.OK);
         } catch (Exception e) {
@@ -39,9 +40,9 @@ public class ProfileController {
             Pageable pageable = PageRequest.of(page, size);
             Page<ProfileEntity> response;
             if (skill.isEmpty()) {
-                 response = profileService.findAllPagination(pageable);
+                 response = profileService.findAll(pageable);
             } else{
-                 response = profileService.findBySkills(skill,pageable);
+                 response = profileService.findProfileEntityBySkillNamaSkill(skill,pageable);
             }
             Response<ProfileEntity> res = new Response<>();
             res.setData(response.getContent());
@@ -68,7 +69,7 @@ public class ProfileController {
 
 
     @DeleteMapping(value = "/delete-profile/{id}")
-    public ResponseEntity<?> delete(@PathVariable(name = "id") String id) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Long id) {
         try {
             profileService.deleteById(id);
             return new ResponseEntity<>("Delete Berhasil", HttpStatus.OK);

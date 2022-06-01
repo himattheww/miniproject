@@ -1,15 +1,16 @@
 package com.example.miniproject.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.annotation.processing.Generated;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "PROFILE")
+@Table(name = "profile")
 public class ProfileEntity {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "nama")
     private String nama;
@@ -26,14 +27,34 @@ public class ProfileEntity {
     @Column(name = "nomor_handphone")
     private String nomorHandphone;
 
-    @Column(name = "skills")
-    private String skills;
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE})
+    @JoinTable(name = "connector",
+            joinColumns = @JoinColumn(name = "id_profile"),
+            inverseJoinColumns = @JoinColumn(name ="id_skill")
+    )
+    private List<SkillEntity> skill;
 
-    public String getId() {
+    ProfileEntity(){
+
+    }
+    public void addSkill(SkillEntity skillEntity){
+        this.skill.add(skillEntity);
+        skillEntity.getListEntity().add(this);
+    }
+
+    public List<SkillEntity> getSkill() {
+        return skill;
+    }
+
+    public void setSkill(List<SkillEntity> skill) {
+        this.skill = skill;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -75,13 +96,5 @@ public class ProfileEntity {
 
     public void setNomorHandphone(String nomorHandphone) {
         this.nomorHandphone = nomorHandphone;
-    }
-
-    public String getSkills() {
-        return skills;
-    }
-
-    public void setSkills(String skills) {
-        this.skills = skills;
     }
 }
